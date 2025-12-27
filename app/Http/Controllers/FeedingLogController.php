@@ -14,7 +14,15 @@ class FeedingLogController extends Controller
             ->take(50)
             ->get();
 
-        return view('dashboard', compact('feedingLogs'));
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
+
+        $todayTotal = FeedingLog::whereBetween('start_time', [$todayStart, $todayEnd])
+            ->sum('quantity_ml');
+
+        $dailyTarget = \App\Models\Setting::get('daily_target_ml', 700);
+
+        return view('dashboard', compact('feedingLogs', 'todayTotal', 'dailyTarget'));
     }
 
     public function store(Request $request)
@@ -23,7 +31,7 @@ class FeedingLogController extends Controller
             'type' => 'required|in:breast_left,breast_right,bottle,formula',
             'start_time' => 'required|date',
             'end_time' => 'nullable|date|after:start_time',
-            'quantity_ml' => 'nullable|integer|min:0',
+            'quantity_ml' => 'required|integer|min:1|max:300',
             'notes' => 'nullable|string',
         ]);
 
@@ -43,7 +51,7 @@ class FeedingLogController extends Controller
             'type' => 'required|in:breast_left,breast_right,bottle,formula',
             'start_time' => 'required|date',
             'end_time' => 'nullable|date|after:start_time',
-            'quantity_ml' => 'nullable|integer|min:0',
+            'quantity_ml' => 'required|integer|min:1|max:300',
             'notes' => 'nullable|string',
         ]);
 

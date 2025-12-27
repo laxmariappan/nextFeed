@@ -39,6 +39,34 @@
                 @csrf
 
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daily Target</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="daily_target_ml" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Daily Milk Target (ml)
+                            </label>
+                            <input
+                                type="number"
+                                name="daily_target_ml"
+                                id="daily_target_ml"
+                                min="400"
+                                max="1200"
+                                step="50"
+                                value="{{ old('daily_target_ml', $settings['daily_target_ml']) }}"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Recommended: 600-800ml for 7-week-old babies
+                            </p>
+                            @error('daily_target_ml')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reminders</h2>
 
                     <div class="space-y-4">

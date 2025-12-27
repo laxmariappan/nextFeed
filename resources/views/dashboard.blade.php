@@ -41,6 +41,35 @@
                 </div>
             @endif
 
+            <div class="mb-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Today's Intake</h2>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">{{ now()->format('M d, Y') }}</span>
+                </div>
+
+                <div class="flex items-end gap-2 mb-3">
+                    <span class="text-4xl font-bold text-blue-600 dark:text-blue-400">{{ $todayTotal }}</span>
+                    <span class="text-2xl text-gray-600 dark:text-gray-400 mb-1">/ {{ $dailyTarget }} ml</span>
+                </div>
+
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mb-2">
+                    <div class="h-4 rounded-full transition-all duration-500 {{ $todayTotal >= $dailyTarget ? 'bg-green-500' : ($todayTotal >= $dailyTarget * 0.7 ? 'bg-blue-500' : 'bg-amber-500') }}"
+                         style="width: {{ min(100, ($todayTotal / $dailyTarget) * 100) }}%">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">
+                        @if($todayTotal >= $dailyTarget)
+                            <span class="text-green-600 dark:text-green-400 font-semibold">✓ Target reached!</span>
+                        @else
+                            <span class="text-gray-700 dark:text-gray-300">{{ $dailyTarget - $todayTotal }} ml remaining</span>
+                        @endif
+                    </span>
+                    <span class="text-gray-600 dark:text-gray-400">{{ round(($todayTotal / $dailyTarget) * 100) }}%</span>
+                </div>
+            </div>
+
             <div class="mb-6">
                 <div id="nextFeedReminder" class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div class="flex items-center justify-between">
@@ -48,8 +77,8 @@
                             <p class="text-sm text-blue-800 dark:text-blue-200">Next feed in</p>
                             <p id="nextFeedTime" class="text-2xl font-bold text-blue-900 dark:text-blue-100">--</p>
                         </div>
-                        <button onclick="startFeed()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-                            Quick Start
+                        <button onclick="openQuickLogModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold">
+                            Log Feed
                         </button>
                     </div>
                 </div>
@@ -60,30 +89,30 @@
                     <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="px-3 py-1 text-sm font-semibold rounded-full
-                                        {{ $log->type === 'breast_left' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200' : '' }}
-                                        {{ $log->type === 'breast_right' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : '' }}
-                                        {{ $log->type === 'bottle' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : '' }}
-                                        {{ $log->type === 'formula' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' : '' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $log->type)) }}
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-4 py-2 text-3xl font-bold text-blue-600 dark:text-blue-400">
+                                        {{ $log->quantity_ml }} <span class="text-lg text-gray-600 dark:text-gray-400">ml</span>
                                     </span>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                                        {{ $log->start_time->diffForHumans() }}
-                                    </span>
+                                    <div class="flex flex-col">
+                                        <span class="px-3 py-1 text-sm font-semibold rounded-full
+                                            {{ $log->type === 'breast_left' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200' : '' }}
+                                            {{ $log->type === 'breast_right' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : '' }}
+                                            {{ $log->type === 'bottle' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : '' }}
+                                            {{ $log->type === 'formula' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' : '' }}">
+                                            {{ ucfirst(str_replace('_', ' ', $log->type)) }}
+                                        </span>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                            {{ $log->start_time->diffForHumans() }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <p class="text-gray-900 dark:text-white font-medium">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
                                     {{ $log->start_time->format('M d, Y h:i A') }}
                                     @if($log->end_time)
                                         - {{ $log->end_time->format('h:i A') }}
-                                        <span class="text-sm text-gray-600 dark:text-gray-400">({{ $log->duration_minutes }} min)</span>
+                                        <span class="text-sm">({{ $log->duration_minutes }} min)</span>
                                     @endif
                                 </p>
-                                @if($log->quantity_ml)
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Quantity: {{ $log->quantity_ml }} ml
-                                    </p>
-                                @endif
                                 @if($log->notes)
                                     <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                                         {{ $log->notes }}
@@ -131,9 +160,50 @@
                 </div>
             </div>
         </div>
+
+        <div id="quantityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50" onclick="if(event.target === this) closeModal()">
+            <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">How much milk?</h3>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Quantity (ml)
+                    </label>
+                    <input
+                        type="number"
+                        id="quantityInput"
+                        min="1"
+                        max="300"
+                        step="5"
+                        class="w-full px-4 py-4 text-3xl font-bold text-center rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="60"
+                        autofocus
+                    >
+                    <div class="grid grid-cols-4 gap-2 mt-4">
+                        <button onclick="setQuantity(30)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">30</button>
+                        <button onclick="setQuantity(60)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">60</button>
+                        <button onclick="setQuantity(90)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">90</button>
+                        <button onclick="setQuantity(120)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">120</button>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600">
+                        Cancel
+                    </button>
+                    <button onclick="submitFeed()" class="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700">
+                        Save
+                    </button>
+                </div>
+            </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        let selectedFeedType = null;
+
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
@@ -144,6 +214,34 @@
         }
 
         function quickLog(type) {
+            selectedFeedType = type;
+            document.getElementById('quantityModal').classList.remove('hidden');
+            document.getElementById('quantityInput').value = '';
+            document.getElementById('quantityInput').focus();
+        }
+
+        function openQuickLogModal() {
+            const lastFeedType = '{{ $feedingLogs->first()->type ?? 'breast_left' }}';
+            quickLog(lastFeedType);
+        }
+
+        function closeModal() {
+            document.getElementById('quantityModal').classList.add('hidden');
+            selectedFeedType = null;
+        }
+
+        function setQuantity(amount) {
+            document.getElementById('quantityInput').value = amount;
+        }
+
+        function submitFeed() {
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+
+            if (!quantity || quantity < 1 || quantity > 300) {
+                alert('Please enter a valid quantity between 1 and 300 ml');
+                return;
+            }
+
             const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
             fetch('{{ route('feeding-logs.store') }}', {
@@ -154,24 +252,31 @@
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    type: type,
-                    start_time: now
+                    type: selectedFeedType,
+                    start_time: now,
+                    quantity_ml: quantity
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
             .then(data => {
                 window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to log feed. Please try again.');
+                alert('Failed to log feed. Please enter quantity.');
             });
         }
 
-        function startFeed() {
-            const lastFeedType = '{{ $feedingLogs->first()->type ?? 'breast_left' }}';
-            quickLog(lastFeedType);
-        }
+        document.getElementById('quantityInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitFeed();
+            }
+        });
 
         function deleteLog(id) {
             if (!confirm('Are you sure you want to delete this feed log?')) {
