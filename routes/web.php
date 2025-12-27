@@ -15,3 +15,44 @@ Route::get('/stats', [StatsController::class, 'index'])->name('stats.index');
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+Route::get('/health', function () {
+    try {
+        $dbStatus = 'disconnected';
+        $dbError = null;
+
+        try {
+            \DB::connection()->getPdo();
+            $dbStatus = 'connected';
+        } catch (\Exception $e) {
+            $dbError = $e->getMessage();
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'timestamp' => now()->toIso8601String(),
+            'database' => [
+                'status' => $dbStatus,
+                'error' => $dbError,
+                'config' => [
+                    'connection' => config('database.default'),
+                    'host' => config('database.connections.mysql.host'),
+                    'port' => config('database.connections.mysql.port'),
+                    'database' => config('database.connections.mysql.database'),
+                    'username' => config('database.connections.mysql.username'),
+                ]
+            ],
+            'env' => [
+                'app_env' => config('app.env'),
+                'app_debug' => config('app.debug'),
+                'app_key_set' => !empty(config('app.key')),
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
+    }
+});
