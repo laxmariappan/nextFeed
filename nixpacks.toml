@@ -11,4 +11,4 @@ cmds = [
 ]
 
 [start]
-cmd = 'php artisan config:clear && php artisan migrate --force 2>&1 && php -S 0.0.0.0:8000 -t public 2>&1'
+cmd = 'php artisan config:clear && echo "Config cleared" && php artisan migrate --force 2>&1 && echo "Migration complete" && echo "Starting PHP server on 0.0.0.0:8000" && echo "Document root: public" && ls -la public/ && php -S 0.0.0.0:8000 -t public'
