@@ -10,6 +10,9 @@ class FeedingLogController extends Controller
 {
     public function index()
     {
+        $timezone = \App\Models\Setting::get('timezone', 'Asia/Kolkata');
+        config(['app.timezone' => $timezone]);
+
         $feedingLogs = FeedingLog::orderBy('start_time', 'desc')
             ->take(50)
             ->get();
@@ -21,8 +24,9 @@ class FeedingLogController extends Controller
             ->sum('quantity_ml');
 
         $dailyTarget = \App\Models\Setting::get('daily_target_ml', 700);
+        $reminderInterval = \App\Models\Setting::get('reminder_interval', 180);
 
-        return view('dashboard', compact('feedingLogs', 'todayTotal', 'dailyTarget'));
+        return view('dashboard', compact('feedingLogs', 'todayTotal', 'dailyTarget', 'reminderInterval', 'timezone'));
     }
 
     public function store(Request $request)

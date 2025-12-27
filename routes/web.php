@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FeedingLogController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FeedingLogController::class, 'index'])->name('feeding-logs.index');
@@ -9,6 +10,8 @@ Route::post('/feeding-logs', [FeedingLogController::class, 'store'])->name('feed
 Route::put('/feeding-logs/{feedingLog}', [FeedingLogController::class, 'update'])->name('feeding-logs.update');
 Route::delete('/feeding-logs/{feedingLog}', [FeedingLogController::class, 'destroy'])->name('feeding-logs.destroy');
 Route::get('/export', [FeedingLogController::class, 'export'])->name('feeding-logs.export');
+
+Route::get('/stats', [StatsController::class, 'index'])->name('stats.index');
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');

@@ -5,29 +5,37 @@ A minimal, privacy-respecting, open-source baby feeding tracker designed for par
 ## Features
 
 - **One-Tap Feed Logging** - Quick-log buttons for breast (left/right), bottle, and formula feeds
+- **Edit Feed Logs** - Update feed times, quantities, and notes after logging
 - **Feed History** - View recent feeding sessions with timestamps and durations
-- **Next Feed Reminder** - Countdown timer showing when the next feed is due
-- **Dark Mode** - Automatic dark mode with manual toggle
+- **Statistics & Calendar** - Day/week/month views with visual calendar showing feeding patterns
+- **Next Feed Reminder** - Countdown timer showing when the next feed is due with actual time
+- **Timezone Support** - Configurable timezone for accurate time tracking
+- **Daily Target Tracking** - Set and monitor daily milk intake goals
+- **Dark Mode** - Manual dark mode toggle with localStorage persistence
 - **Data Export** - Export feeding logs to CSV or JSON format
 - **Privacy First** - All data stored locally, no external tracking
 - **Mobile-First Design** - Large touch targets optimized for one-handed use at 3am
+- **Soft Pastel Theme** - Eye-friendly colors for tired parents at night
 
 ## Screenshots
 
 The app features:
 - Large, color-coded feed type buttons at the bottom for thumb reach
 - Feed history timeline with edit/delete options
-- Next feed countdown reminder
-- Dark mode support
+- Next feed countdown reminder with actual time display
+- Day/week/month statistics views
+- Visual calendar showing feeding patterns
+- Dark mode support with soft pastel colors
 - Clean, distraction-free interface
 
 ## Tech Stack
 
 - **Laravel 12** - Latest PHP framework
-- **MySQL** - Database
-- **Tailwind CSS** - Styling
+- **MySQL** - Database for storing feeding logs and settings
+- **Tailwind CSS v4** - Styling with custom theme
 - **Vite** - Asset bundling
-- **Alpine.js** (via Blade) - Minimal JavaScript interactivity
+- **Vanilla JavaScript** - Minimal JavaScript for interactivity
+- **Carbon** - Date/time manipulation
 
 ## Installation
 
@@ -114,22 +122,53 @@ The app features:
 
 1. Open the app
 2. Tap one of the four large buttons at the bottom:
-   - **Left Breast** (pink)
-   - **Right Breast** (purple)
-   - **Bottle** (blue)
-   - **Formula** (amber)
-3. Feed is instantly logged with the current timestamp
+   - **Left Breast** (soft lavender)
+   - **Right Breast** (soft lavender)
+   - **Bottle** (soft blue)
+   - **Formula** (muted peach)
+3. Enter the quantity in ml (quick-select buttons: 30, 60, 90, 120)
+4. Feed is logged with the current timestamp
+
+### Editing a Feed
+
+1. Tap the edit icon (pencil) on any feed entry
+2. Update any of the following:
+   - Feed type
+   - Start time
+   - End time (optional)
+   - Quantity (ml)
+   - Notes (optional)
+3. Tap "Update" to save changes
 
 ### Viewing History
 
 - Recent feeds appear in chronological order below the reminder
 - Each entry shows:
+  - Quantity in ml
   - Feed type (color-coded badge)
   - Time ago
-  - Start time (and end time if tracked)
+  - Full timestamp
   - Duration (if end time exists)
-  - Quantity in ml (if tracked)
   - Notes (if added)
+
+### Viewing Statistics
+
+1. Tap the stats icon in the header
+2. Choose from three views:
+   - **Day** - Today's summary with feed timeline
+   - **Week** - 7-day breakdown with daily totals
+   - **Month** - Calendar view showing feeding patterns
+3. Navigate between dates using arrow buttons
+
+### Settings
+
+1. Tap the settings icon in the header
+2. Configure:
+   - **Daily Target** - Set your ml goal (default: 700ml)
+   - **Reminder Interval** - Time between feeds (default: 180 min)
+   - **Timezone** - Your local timezone (default: Asia/Kolkata)
+   - **Default Feed Type** - Preferred feed type for quick logging
+   - **Notifications** - Enable/disable reminders
 
 ### Deleting a Feed
 
@@ -156,6 +195,9 @@ The app features:
 - `PUT /feeding-logs/{id}` - Update feed
 - `DELETE /feeding-logs/{id}` - Delete feed
 - `GET /export?format=csv|json` - Export data
+- `GET /stats?view={day|week|month}&date={Y-m-d}` - Statistics view
+- `GET /settings` - Settings page
+- `POST /settings` - Update settings
 
 ### JSON API
 
@@ -213,12 +255,8 @@ npm run dev
 ## Roadmap
 
 - [ ] Timer mode for tracking feed duration in real-time
-- [ ] Customizable reminder intervals
 - [ ] Multiple baby profiles
-- [ ] Charts and analytics
-- [ ] PWA support for offline use
-- [ ] Diaper change tracking
-- [ ] Sleep tracking
+- [ ] Enhanced charts and analytics
 - [ ] Cloud backup option (encrypted, user-controlled)
 - [ ] Agent API for physical buttons/voice commands
 
