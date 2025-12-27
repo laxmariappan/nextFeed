@@ -1,59 +1,259 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# nextFeed - Baby Feeding Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A minimal, privacy-respecting, open-source baby feeding tracker designed for parents and caregivers. Built with Laravel and optimized for one-handed mobile use.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **One-Tap Feed Logging** - Quick-log buttons for breast (left/right), bottle, and formula feeds
+- **Feed History** - View recent feeding sessions with timestamps and durations
+- **Next Feed Reminder** - Countdown timer showing when the next feed is due
+- **Dark Mode** - Automatic dark mode with manual toggle
+- **Data Export** - Export feeding logs to CSV or JSON format
+- **Privacy First** - All data stored locally, no external tracking
+- **Mobile-First Design** - Large touch targets optimized for one-handed use at 3am
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Screenshots
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The app features:
+- Large, color-coded feed type buttons at the bottom for thumb reach
+- Feed history timeline with edit/delete options
+- Next feed countdown reminder
+- Dark mode support
+- Clean, distraction-free interface
 
-## Learning Laravel
+## Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Laravel 12** - Latest PHP framework
+- **MySQL** - Database
+- **Tailwind CSS** - Styling
+- **Vite** - Asset bundling
+- **Alpine.js** (via Blade) - Minimal JavaScript interactivity
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+### Prerequisites
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP 8.2+
+- Composer
+- MySQL
+- Node.js & npm
+- Laravel Herd (recommended) or similar local PHP environment
 
-### Premium Partners
+### Setup Steps
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/laxmariappan/nextFeed.git
+   cd nextFeed
+   ```
+
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Configure environment**
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and configure your database:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nextfeed
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. **Generate application key**
+   ```bash
+   php artisan key:generate
+   ```
+
+6. **Create database**
+   ```bash
+   mysql -u root -e "CREATE DATABASE nextfeed CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   ```
+
+7. **Run migrations**
+   ```bash
+   php artisan migrate
+   ```
+
+8. **Build frontend assets**
+   ```bash
+   npm run build
+   ```
+
+   For development with hot reload:
+   ```bash
+   npm run dev
+   ```
+
+9. **Start the application**
+
+   If using Laravel Herd:
+   - The app should be available at `http://nextfeed.test`
+
+   Otherwise, use Laravel's built-in server:
+   ```bash
+   php artisan serve
+   ```
+   - Visit `http://localhost:8000`
+
+## Usage
+
+### Logging a Feed
+
+1. Open the app
+2. Tap one of the four large buttons at the bottom:
+   - **Left Breast** (pink)
+   - **Right Breast** (purple)
+   - **Bottle** (blue)
+   - **Formula** (amber)
+3. Feed is instantly logged with the current timestamp
+
+### Viewing History
+
+- Recent feeds appear in chronological order below the reminder
+- Each entry shows:
+  - Feed type (color-coded badge)
+  - Time ago
+  - Start time (and end time if tracked)
+  - Duration (if end time exists)
+  - Quantity in ml (if tracked)
+  - Notes (if added)
+
+### Deleting a Feed
+
+- Tap the trash icon on any feed entry
+- Confirm deletion
+
+### Exporting Data
+
+- Tap the download icon in the top right
+- Choose format (CSV or JSON)
+- Data downloads to your device
+
+### Dark Mode
+
+- Tap the sun/moon icon in the top right
+- Preference is saved to localStorage
+
+## API Endpoints
+
+### Web Routes
+
+- `GET /` - Dashboard (feed list)
+- `POST /feeding-logs` - Create new feed
+- `PUT /feeding-logs/{id}` - Update feed
+- `DELETE /feeding-logs/{id}` - Delete feed
+- `GET /export?format=csv|json` - Export data
+
+### JSON API
+
+All endpoints support JSON requests/responses by setting:
+```
+Accept: application/json
+Content-Type: application/json
+```
+
+## Database Schema
+
+### feeding_logs Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | bigint | Primary key |
+| type | enum | breast_left, breast_right, bottle, formula |
+| start_time | datetime | When feeding started |
+| end_time | datetime (nullable) | When feeding ended |
+| quantity_ml | integer (nullable) | Amount in milliliters |
+| notes | text (nullable) | Additional notes |
+| created_at | timestamp | Record creation time |
+| updated_at | timestamp | Record update time |
+
+### settings Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | bigint | Primary key |
+| key | string (unique) | Setting name |
+| value | text (nullable) | Setting value |
+| created_at | timestamp | Record creation time |
+| updated_at | timestamp | Record update time |
+
+## Development
+
+### Running Tests
+
+```bash
+php artisan test
+```
+
+### Code Style
+
+```bash
+./vendor/bin/pint
+```
+
+### Watch Assets (Development)
+
+```bash
+npm run dev
+```
+
+## Roadmap
+
+- [ ] Timer mode for tracking feed duration in real-time
+- [ ] Customizable reminder intervals
+- [ ] Multiple baby profiles
+- [ ] Charts and analytics
+- [ ] PWA support for offline use
+- [ ] Diaper change tracking
+- [ ] Sleep tracking
+- [ ] Cloud backup option (encrypted, user-controlled)
+- [ ] Agent API for physical buttons/voice commands
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Code of Conduct
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Privacy
 
-## Security Vulnerabilities
+nextFeed is designed with privacy as a core principle:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- All data stored locally on your server/device
+- No external analytics or tracking
+- No user accounts required
+- Data export available at any time
+- Open source for full transparency
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open source and available under the [MIT License](LICENSE).
+
+## Support
+
+For bugs and feature requests, please [open an issue](https://github.com/laxmariappan/nextFeed/issues).
+
+## Acknowledgments
+
+Built with love for tired parents everywhere 💜
+
+---
+
+**nextFeed** - Track feeds, not stress.
